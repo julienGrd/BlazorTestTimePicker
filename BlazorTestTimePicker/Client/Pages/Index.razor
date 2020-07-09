@@ -1,0 +1,35 @@
+﻿@page "/"
+@using BlazorTestTimePicker.Shared; 
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+<input type="time" class="form-control time-control" required
+       @bind="@InternalValue"
+       @bind:event="onchange" />
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+
+@code{
+    private int _stepInMinutes = 5;
+
+    private DateTime _internalValue;
+    public DateTime InternalValue
+    {
+        get
+        {
+            return _internalValue;
+        }
+        set
+        {
+            if (_internalValue.Hour != value.Hour || _internalValue.Minute != value.Minute)
+            {
+                var lTimespan = new TimeSpan(value.Hour, value.Minute, 0);
+                //on arrondi si besoin
+                lTimespan = lTimespan.RoundToNearestMinutes(_stepInMinutes);
+
+                _internalValue = _internalValue.Date.AddHours(lTimespan.Hours).AddMinutes(lTimespan.Minutes);
+            }
+        }
+    }
+}
